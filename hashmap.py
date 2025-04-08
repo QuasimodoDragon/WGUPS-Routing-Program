@@ -6,6 +6,7 @@ class HashMap:
     # TODO update hashing
     def _get_hash(self, key):
         hash = 0
+
         for char in str(key):
             hash += ord(char)
         return hash % self.size
@@ -29,10 +30,26 @@ class HashMap:
             return True
 
     def get(self, key):
-        return
+        key_hash = self._get_hash(key)
+
+        if self.map[key_hash] is not None:
+            for pair in self.map[key_hash]:
+                if pair[0] == key:
+                    return pair[1]
+        return None
     
     def delete(self, key):
-        return
+        key_hash = self._get_hash(key)
+
+        if self.map[key_hash] is None:
+            return False
+        for i in range (0, len(self.map[key_hash])):
+            if self.map[key_hash][i][0] == key:
+                self.map[key_hash].pop(i)
+                return True
 
     def print(self):
-        return
+        print('Temp') # TODO update this string
+        for item in self.map:
+            if item is not None:
+                print(str(item))
