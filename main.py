@@ -8,6 +8,7 @@ packageTable = HashTable()
 # File path for the csv package data
 file_path = "data/packages.csv"
 
+# TODO make this a function
 # Reads the packages csv file and uses the data to create a package object and add it to the package hash table
 # Surround with a try block to catch exceptions
 try:
@@ -18,6 +19,7 @@ try:
         # Skips the header row
         next(reader)
 
+        # Loops through the rows and adds the column data to create a package object
         for row in reader:
             id = int(row[0])
             address = row[1]
@@ -28,9 +30,13 @@ try:
             weight = row[6]
             notes = row[7]
 
+            # Creates a package object from the csv data
             package = Package(id, address, city, state, zip, deadline, weight, notes)
+            # Adds the package object to the package hash table
             packageTable.add(id, package)
 except FileNotFoundError:
     print("The file was not found")
 except PermissionError:
     print("Permission to open the file not granted")
+
+print(packageTable.lookup(3))

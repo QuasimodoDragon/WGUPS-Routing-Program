@@ -37,20 +37,22 @@ class HashTable:
             # Appends the key-value pair to the bucket list
             self.table[hash_num].append(key_value)
             return True
-        
-    # Searches the hash table using a key and returns the associated value
-    def find(self, key):
+    
+    # Searches the hash table using a key and returns package data
+    def lookup(self, key):
         hash_num = self._get_hash(key)
         bucket_list = self.table[hash_num]
 
         # If bucket is not empty iterate through bucket list
         if bucket_list is not None:
             for pair in bucket_list:
+                # If the key matches add the package object to the variable
                 if pair[0] == key:
-                    # return value
-                    return pair[1]
+                    package = pair[1]
+                    # Return the object's data in string format
+                    return package.__str__()
         return None
-    
+                
     def remove(self, key):
         hash_num = self._get_hash(key)
         bucket_list = self.table[hash_num]
