@@ -62,14 +62,14 @@ class HashTable:
                     # Remove the key-value pair list in the bucket
                     self.table[hash_num].remove([pair[0], pair[1]])
 
-# Test
-hashBoy = HashTable()
-hashBoy.add(125245, "Boy")
-hashBoy.add(5134, "Girl")
-print(hashBoy.table)
+# # Test
+# hashBoy = HashTable()
+# hashBoy.add(125245, "Boy")
+# hashBoy.add(5134, "Girl")
+# print(hashBoy.table)
 
-print(hashBoy.find(5134))
+# print(hashBoy.find(5134))
 
-hashBoy.remove(5134)
+# hashBoy.remove(5134)
 
-print(hashBoy.table)
+# print(hashBoy.table)
