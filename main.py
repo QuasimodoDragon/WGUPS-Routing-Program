@@ -12,7 +12,7 @@ file_path = "data/packages.csv"
 # Reads the packages csv file and uses the data to create a package object and add it to the package hash table
 # Surround with a try block to catch exceptions
 try:
-    # Opens the packages csv file
+    # Opens the packages csv file and reads the data
     with open(file_path, "r") as csv_file:
         # Holds the csv content in reader with a comma delimiter
         reader = csv.reader(csv_file, delimiter=',')
@@ -34,8 +34,10 @@ try:
             package = Package(id, address, city, state, zip, deadline, weight, notes)
             # Adds the package object to the package hash table
             packageTable.add(id, package)
+# If the file is not found print this exception
 except FileNotFoundError:
     print("The file was not found")
+# If the user doesn't have permission to open the file print the exception
 except PermissionError:
     print("Permission to open the file not granted")
 
