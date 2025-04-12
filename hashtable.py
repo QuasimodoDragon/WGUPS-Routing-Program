@@ -64,14 +64,16 @@ class HashTable:
                     # Remove the key-value pair list in the bucket
                     self.table[hash_num].remove([pair[0], pair[1]])
 
-# # Test
-# hashBoy = HashTable()
-# hashBoy.add(125245, "Boy")
-# hashBoy.add(5134, "Girl")
-# print(hashBoy.table)
+    def get(self, key):
+        hash_num = self._get_hash(key)
+        bucket_list = self.table[hash_num]
 
-# print(hashBoy.find(5134))
-
-# hashBoy.remove(5134)
-
-# print(hashBoy.table)
+        # If bucket is not empty iterate through bucket list
+        if bucket_list is not None:
+            for pair in bucket_list:
+                # If the key matches add the package object to the variable
+                if pair[0] == key:
+                    package = pair[1]
+                    # Return the package object
+                    return package
+        return None

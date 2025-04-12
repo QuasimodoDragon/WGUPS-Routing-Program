@@ -4,7 +4,7 @@ from hashtable import HashTable
 from truck import Truck
 
 # Create the hash table to store package objects
-packageTable = HashTable()
+PackageTable = HashTable()
 
 # File path for the csv package data
 file_path = "data/packages.csv"
@@ -34,19 +34,13 @@ try:
             # Creates a package object from the csv data
             package = Package(id, address, city, state, zip, deadline, weight, notes)
             # Adds the package object to the package hash table
-            packageTable.add(id, package)
+            PackageTable.add(id, package)
 # If the file is not found print this exception
 except FileNotFoundError:
     print("The file was not found")
 # If the user doesn't have permission to open the file print the exception
 except PermissionError:
     print("Permission to open the file not granted")
-
-# print(packageTable.lookup(3))
-
-# truck1 = Truck()
-# truck1.add(packageTable.lookup(2))
-# print(truck1.packages[0].__str__())
 
 # ------------- Distance Matrix ------------- 
 
@@ -60,9 +54,6 @@ with open("data/distances.csv", "r") as csv_file:
     # Add every row to the distance matrix to create a 2D array
     for row in reader:
         distance_matrix.append(row)
-
-# print(distance_matrix[3][2])
-
 
 # ------------- Address List -------------
 
@@ -78,8 +69,6 @@ with open("data/addresses.csv", "r") as csv_file:
     # For every row add only the address to the array
     for row in reader:
         address_list.append(row[1])
-
-# print(address_list)
 
 # ------------- Distance Betwixt Function -------------
 
@@ -99,4 +88,48 @@ def betwixt(address_1, address_2):
         distance = distance_matrix[index_2][index_1]
         return distance
 
-# print(betwixt("300 State St", "1330 2100 S"))
+# Create the truck objects
+Truck_1 = Truck()
+Truck_2 = Truck()
+# Truck 3 likely won't be used since there are only 2 drivers
+Truck_3 = Truck()
+
+# Can only be loaded on truck 2
+Truck_2.load(PackageTable.get(3))
+Truck_2.load(PackageTable.get(18))
+Truck_2.load(PackageTable.get(36))
+Truck_2.load(PackageTable.get(38))
+
+# Load the rest of truck 2
+Truck_2.load(PackageTable.get(21))
+Truck_2.load(PackageTable.get(22))
+Truck_2.load(PackageTable.get(23))
+Truck_2.load(PackageTable.get(24))
+Truck_2.load(PackageTable.get(25))
+Truck_2.load(PackageTable.get(26))
+Truck_2.load(PackageTable.get(27))
+Truck_2.load(PackageTable.get(28))
+Truck_2.load(PackageTable.get(29))
+Truck_2.load(PackageTable.get(30))
+Truck_2.load(PackageTable.get(31))
+Truck_2.load(PackageTable.get(32))
+
+# Packages 13, 15, 19 need to be delivered together
+Truck_1.load(PackageTable.get(13))
+Truck_1.load(PackageTable.get(14))
+Truck_1.load(PackageTable.get(15))
+Truck_1.load(PackageTable.get(19))
+
+# Load the rest of truck 1
+Truck_1.load(PackageTable.get(1))
+Truck_1.load(PackageTable.get(2))
+Truck_1.load(PackageTable.get(4))
+Truck_1.load(PackageTable.get(5))
+Truck_1.load(PackageTable.get(6))
+Truck_1.load(PackageTable.get(7))
+Truck_1.load(PackageTable.get(8))
+Truck_1.load(PackageTable.get(9))
+Truck_1.load(PackageTable.get(10))
+Truck_1.load(PackageTable.get(11))
+Truck_1.load(PackageTable.get(12))
+Truck_1.load(PackageTable.get(20))

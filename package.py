@@ -12,5 +12,6 @@ class Package:
         self.notes = notes
         self.status = status
 
+    # Returns a a string of the package's data
     def __str__(self):
         return f'ID: {self.id}, Address: {self.address}, City: {self.city}, Zip Code: {self.zip}, Deadline: {self.deadline}, Weight (kg): {self.weight}, Status: {self.status}'
