@@ -1,4 +1,7 @@
 class Truck:
 
-    def __init__(self, packages):
-        self.packages = packages
+    def __init__(self):
+        self.packages = []
+
+    def add(self, package):
+        self.packages.append(package)

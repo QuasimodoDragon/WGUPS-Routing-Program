@@ -1,6 +1,7 @@
 import csv
 from package import Package
 from hashtable import HashTable
+from truck import Truck
 
 # Create the hash table to store package objects
 packageTable = HashTable()
@@ -41,4 +42,34 @@ except FileNotFoundError:
 except PermissionError:
     print("Permission to open the file not granted")
 
-print(packageTable.lookup(3))
+# print(packageTable.lookup(3))
+
+# truck1 = Truck()
+# truck1.add(packageTable.lookup(2))
+# print(truck1.packages[0].__str__())
+
+# ------------- Distance Matrix ------------- 
+
+distance_matrix = []
+
+with open("data/distances.csv", "r") as csv_file:
+    reader = csv.reader(csv_file, delimiter=",")
+
+    for row in reader:
+        distance_matrix.append(row)
+
+# print(distance_matrix[3][2])
+
+
+# ------------- Address List -------------
+
+address_list = []
+
+with open("data/addresses.csv", "r") as csv_file:
+    reader = csv.reader(csv_file, delimiter=",")
+    next(reader)
+
+    for row in reader:
+        address_list.append(row[1])
+
+# print(address_list)
