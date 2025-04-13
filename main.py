@@ -101,22 +101,21 @@ Truck_2.load(PackageTable.get(36))
 Truck_2.load(PackageTable.get(38))
 
 # Load the rest of truck 2
-Truck_2.load(PackageTable.get(21))
-Truck_2.load(PackageTable.get(22))
 Truck_2.load(PackageTable.get(23))
 Truck_2.load(PackageTable.get(24))
-Truck_2.load(PackageTable.get(25))
 Truck_2.load(PackageTable.get(26))
 Truck_2.load(PackageTable.get(27))
-Truck_2.load(PackageTable.get(28))
 Truck_2.load(PackageTable.get(29))
 Truck_2.load(PackageTable.get(30))
 Truck_2.load(PackageTable.get(31))
-Truck_2.load(PackageTable.get(32))
+Truck_2.load(PackageTable.get(33))
+Truck_2.load(PackageTable.get(34))
+Truck_2.load(PackageTable.get(35))
+Truck_2.load(PackageTable.get(37))
+Truck_2.load(PackageTable.get(39))
 
 # Packages 13, 15, 19 need to be delivered together
 Truck_1.load(PackageTable.get(13))
-Truck_1.load(PackageTable.get(14))
 Truck_1.load(PackageTable.get(15))
 Truck_1.load(PackageTable.get(19))
 
@@ -125,11 +124,23 @@ Truck_1.load(PackageTable.get(1))
 Truck_1.load(PackageTable.get(2))
 Truck_1.load(PackageTable.get(4))
 Truck_1.load(PackageTable.get(5))
-Truck_1.load(PackageTable.get(6))
 Truck_1.load(PackageTable.get(7))
 Truck_1.load(PackageTable.get(8))
-Truck_1.load(PackageTable.get(9))
 Truck_1.load(PackageTable.get(10))
 Truck_1.load(PackageTable.get(11))
 Truck_1.load(PackageTable.get(12))
+Truck_1.load(PackageTable.get(14))
 Truck_1.load(PackageTable.get(20))
+Truck_1.load(PackageTable.get(21))
+Truck_1.load(PackageTable.get(22))
+
+# Delayed
+# Truck_1.load(PackageTable.get(6))
+# Truck_2.load(PackageTable.get(25))
+# Truck_2.load(PackageTable.get(28))
+# Truck_2.load(PackageTable.get(32))
+
+# Wrong address
+# Truck_1.load(PackageTable.get(9))
+
+Truck_1.unload(22)
