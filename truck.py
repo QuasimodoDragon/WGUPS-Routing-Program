@@ -15,6 +15,7 @@ class Truck:
         else:
             self.packages.append(package)
 
+    # TODO rename to deliver
     def unload(self, id):
         # Loops through all packages in the package list
         for package in self.packages:

@@ -64,7 +64,7 @@ class HashTable:
                     # Remove the key-value pair list in the bucket
                     self.table[hash_num].remove([pair[0], pair[1]])
 
-    def get(self, key):
+    def get_package(self, key):
         hash_num = self._get_hash(key)
         bucket_list = self.table[hash_num]
 

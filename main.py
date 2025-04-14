@@ -1,3 +1,5 @@
+# Student ID: 011012738
+
 import csv
 from package import Package
 from hashtable import HashTable
@@ -86,7 +88,29 @@ def betwixt(address_1, address_2):
     # If the distance is empty then the indexes are swapped and the distance is returned
     else:
         distance = distance_matrix[index_2][index_1]
-        return distance
+        return float(distance)
+
+# ------------- Nearest Address Function -------------
+
+def nearest_address(truck, current_address):
+    package_list = truck.packages
+    # Holds a large number so that the first package in the loop automatically becomes the shortest
+    shortest_dist = 100
+    nearest = None
+
+    # Loops through all of the package objects in the truck's package list
+    for package in package_list:
+        # Holds the package address
+        dest_address = package.address
+        # Uses the betwixt function to get the distance between package address and current address
+        distance = betwixt(current_address, dest_address)
+
+        # If the distance is shorter than the shortest distance then update the nearest address and the shortest dist
+        if distance < shortest_dist:
+            shortest_dist = distance
+            nearest = dest_address
+    
+    return nearest
 
 # Create the truck objects
 Truck_1 = Truck()
@@ -95,52 +119,57 @@ Truck_2 = Truck()
 Truck_3 = Truck()
 
 # Can only be loaded on truck 2
-Truck_2.load(PackageTable.get(3))
-Truck_2.load(PackageTable.get(18))
-Truck_2.load(PackageTable.get(36))
-Truck_2.load(PackageTable.get(38))
+Truck_2.load(PackageTable.get_package(3))
+Truck_2.load(PackageTable.get_package(18))
+Truck_2.load(PackageTable.get_package(36))
+Truck_2.load(PackageTable.get_package(38))
 
 # Load the rest of truck 2
-Truck_2.load(PackageTable.get(23))
-Truck_2.load(PackageTable.get(24))
-Truck_2.load(PackageTable.get(26))
-Truck_2.load(PackageTable.get(27))
-Truck_2.load(PackageTable.get(29))
-Truck_2.load(PackageTable.get(30))
-Truck_2.load(PackageTable.get(31))
-Truck_2.load(PackageTable.get(33))
-Truck_2.load(PackageTable.get(34))
-Truck_2.load(PackageTable.get(35))
-Truck_2.load(PackageTable.get(37))
-Truck_2.load(PackageTable.get(39))
+Truck_2.load(PackageTable.get_package(23))
+Truck_2.load(PackageTable.get_package(24))
+Truck_2.load(PackageTable.get_package(26))
+Truck_2.load(PackageTable.get_package(27))
+Truck_2.load(PackageTable.get_package(29))
+Truck_2.load(PackageTable.get_package(30))
+Truck_2.load(PackageTable.get_package(31))
+Truck_2.load(PackageTable.get_package(33))
+Truck_2.load(PackageTable.get_package(34))
+Truck_2.load(PackageTable.get_package(35))
+Truck_2.load(PackageTable.get_package(37))
+Truck_2.load(PackageTable.get_package(39))
 
 # Packages 13, 15, 19 need to be delivered together
-Truck_1.load(PackageTable.get(13))
-Truck_1.load(PackageTable.get(15))
-Truck_1.load(PackageTable.get(19))
+Truck_1.load(PackageTable.get_package(13))
+Truck_1.load(PackageTable.get_package(15))
+Truck_1.load(PackageTable.get_package(19))
 
 # Load the rest of truck 1
-Truck_1.load(PackageTable.get(1))
-Truck_1.load(PackageTable.get(2))
-Truck_1.load(PackageTable.get(4))
-Truck_1.load(PackageTable.get(5))
-Truck_1.load(PackageTable.get(7))
-Truck_1.load(PackageTable.get(8))
-Truck_1.load(PackageTable.get(10))
-Truck_1.load(PackageTable.get(11))
-Truck_1.load(PackageTable.get(12))
-Truck_1.load(PackageTable.get(14))
-Truck_1.load(PackageTable.get(20))
-Truck_1.load(PackageTable.get(21))
-Truck_1.load(PackageTable.get(22))
+Truck_1.load(PackageTable.get_package(1))
+Truck_1.load(PackageTable.get_package(2))
+Truck_1.load(PackageTable.get_package(4))
+Truck_1.load(PackageTable.get_package(5))
+Truck_1.load(PackageTable.get_package(7))
+Truck_1.load(PackageTable.get_package(8))
+Truck_1.load(PackageTable.get_package(10))
+Truck_1.load(PackageTable.get_package(11))
+Truck_1.load(PackageTable.get_package(12))
+Truck_1.load(PackageTable.get_package(14))
+Truck_1.load(PackageTable.get_package(20))
+Truck_1.load(PackageTable.get_package(21))
+Truck_1.load(PackageTable.get_package(22))
 
 # Delayed
-# Truck_1.load(PackageTable.get(6))
-# Truck_2.load(PackageTable.get(25))
-# Truck_2.load(PackageTable.get(28))
-# Truck_2.load(PackageTable.get(32))
+# Truck_1.load(PackageTable.get_package(6))
+# Truck_2.load(PackageTable.get_package(25))
+# Truck_2.load(PackageTable.get_package(28))
+# Truck_2.load(PackageTable.get_package(32))
 
 # Wrong address
-# Truck_1.load(PackageTable.get(9))
+# Truck_1.load(PackageTable.get_package(9))
 
-Truck_1.unload(22)
+
+# ------------- Test -------------
+
+# Truck_1.unload(22)
+yo = nearest_address(Truck_2, "4001 South 700 East")
+print(yo)
