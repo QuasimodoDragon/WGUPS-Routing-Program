@@ -44,6 +44,7 @@ except FileNotFoundError:
 except PermissionError:
     print("Permission to open the file not granted")
 
+
 # ------------- Distance Matrix ------------- 
 
 # Create a distance matrix that will become a 2D array
@@ -56,6 +57,7 @@ with open("data/distances.csv", "r") as csv_file:
     # Add every row to the distance matrix to create a 2D array
     for row in reader:
         distance_matrix.append(row)
+
 
 # ------------- Address List -------------
 
@@ -71,6 +73,7 @@ with open("data/addresses.csv", "r") as csv_file:
     # For every row add only the address to the array
     for row in reader:
         address_list.append(row[1])
+
 
 # ------------- Distance Betwixt Function -------------
 
@@ -90,10 +93,13 @@ def betwixt(address_1, address_2):
         distance = distance_matrix[index_2][index_1]
         return float(distance)
 
+
 # ------------- Nearest Address Function -------------
 
-def nearest_address(truck, current_address):
+def nearest_address(truck):
+    # Holds the truck package list and its current address
     package_list = truck.packages
+    current_address = truck.current_address
     # Holds a large number so that the first package in the loop automatically becomes the shortest
     shortest_dist = 100
     nearest = None
@@ -111,6 +117,40 @@ def nearest_address(truck, current_address):
             nearest = dest_address
     
     return nearest
+
+
+# ------------- Deliver Function -------------
+
+def deliver(truck):
+    # package_list = truck.packages
+    # next_address = nearest_address(truck)
+    # distance = betwixt(truck.current_address, next_address)
+    # truck.add_mileage(distance)
+    # # Formula: time = distance / speed
+    # time_to_deliver = distance / 18
+
+    # truck.current_address = next_address
+    # truck.unload(package)
+
+    while truck.packages:
+        package_list = truck.packages
+        next_address = nearest_address(truck)
+        distance = betwixt(truck.current_address, next_address)
+        
+        for package in package_list:
+            if package.address == next_address:
+                package.status = "EN ROUTE"
+        
+        truck.mileage += distance
+        # Formula: time = distance / speed
+        time_to_deliver = distance / 18
+        # TODO add time to deliver to elapsed time, keep track of time delivered
+
+        for package in package_list:
+            if package.address == next_address:
+                print(package.__str__() + ", took " + str(time_to_deliver) + " to deliver")
+                truck.unload(package.id)
+        
 
 # Create the truck objects
 Truck_1 = Truck()
@@ -170,6 +210,4 @@ Truck_1.load(PackageTable.get_package(22))
 
 # ------------- Test -------------
 
-# Truck_1.unload(22)
-yo = nearest_address(Truck_2, "4001 South 700 East")
-print(yo)
+deliver(Truck_2)

@@ -1,7 +1,9 @@
 class Truck:
 
-    def __init__(self, mileage = 0):
+    def __init__(self, current_address = "4001 South 700 East", mileage = 0):
         self.packages = []
+        self.packages_delivered = []
+        self.current_address = current_address
         self.mileage = mileage
 
     def load(self, package):
@@ -15,16 +17,17 @@ class Truck:
         else:
             self.packages.append(package)
 
-    # TODO rename to deliver
     def unload(self, id):
         # Loops through all packages in the package list
         for package in self.packages:
             # If the passed id matches the package id then it is removed from the package list
             if package.id == id:
                 self.packages.remove(package)
+                package.status = "DELIVERED"
+                self.packages_delivered.append(package)
             else:
                 return None
 
-    # Adds mileage to the truck
-    def add_mileage(self, num):
-        self.mileage += num
+    # # Adds mileage to the truck
+    # def add_mileage(self, num):
+    #     self.mileage += num
