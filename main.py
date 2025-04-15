@@ -2,7 +2,6 @@
 
 import csv
 import datetime
-from datetime import timedelta
 from package import Package
 from hashtable import HashTable
 from truck import Truck
@@ -126,10 +125,6 @@ def nearest_address(truck):
 # TODO pre-sort packages list with nearest addresses instead of every while loop
 # Deliver function uses nearest neighbor algorithm to deliver the packages
 def deliver(truck):
-    # Start time of delivery
-    # Cited from C950 WGUPS Project Implementation Steps - Example - Nearest Neighbor, https://srm--c.vf.force.com/apex/CourseArticle?id=kA03x000001DbBGCA0&groupId=&searchTerm=&courseCode=C950&rtn=/apex/CommonsExpandedSearch
-    time = datetime.timedelta(hours=8, minutes=0, seconds=0)
-
     # While the truck packages list isn't empty it loops through and delivers the packages
     while len(truck.packages) > 0:
         package_list = truck.packages
@@ -137,87 +132,89 @@ def deliver(truck):
         next_address = nearest_address(truck)
         distance = betwixt(truck.current_address, next_address)
 
+        # Loops through all packages in list and changes status to en route for all going to next address
         for package in package_list:
             if package.address == next_address:
                 package.status = "EN ROUTE"
         
+        # Truck mileage is updated and time to deliver is calculated and added to total time
         truck.mileage += distance
+        
+        # Time to deliver and time updating cited from C950 WGUPS Project Implementation Steps - Example - Nearest Neighbor,
+        # https://srm--c.vf.force.com/apex/CourseArticle?id=kA03x000001DbBGCA0&groupId=&searchTerm=&courseCode=C950&rtn=/apex/CommonsExpandedSearch
         # Formula: time = distance / speed
         time_to_deliver = distance / 18
-        # TODO add time to deliver to elapsed time, keep track of time delivered
-        time = time + datetime.timedelta(hours=time_to_deliver)
+        truck.time = truck.time + datetime.timedelta(hours=time_to_deliver)
 
+        # Loops through package list and updates package delivery information
         for package in package_list:
             if package.address == next_address:
                 package.status = "DELIVERED"
-                package.delivery_time = time
+                package.delivery_time = truck.time
+                # Adds package to the delivered list and removes it from the original package list
                 truck.packages_delivered.append(package)
                 truck.packages.remove(package)
                 print(package.__str__() + ", took " + str(float(time_to_deliver * 60)) + " minutes to deliver")
 
     print("Truck mileage: " + str(truck.mileage))
-        
+
+
 # ------------- Create and Load the trucks -------------
 
 # Create the truck objects
 Truck_1 = Truck()
 Truck_2 = Truck()
-# Truck 3 likely won't be used since there are only 2 drivers
 Truck_3 = Truck()
 
-# TODO group packages that have the same delivery address
-# Can only be loaded on truck 2
-Truck_2.load(PackageTable.get_package(3))
-Truck_2.load(PackageTable.get_package(18))
-Truck_2.load(PackageTable.get_package(36))
-Truck_2.load(PackageTable.get_package(38))
+# TODO Make loops and pass in array of the package id's
+Truck_1.load(PackageTable.get_package(1))
+Truck_1.load(PackageTable.get_package(2))
+Truck_1.load(PackageTable.get_package(4))
+Truck_1.load(PackageTable.get_package(7))
+Truck_1.load(PackageTable.get_package(13))
+Truck_1.load(PackageTable.get_package(14))
+Truck_1.load(PackageTable.get_package(15))
+Truck_1.load(PackageTable.get_package(16))
+Truck_1.load(PackageTable.get_package(19))
+Truck_1.load(PackageTable.get_package(20))
+Truck_1.load(PackageTable.get_package(21))
+Truck_1.load(PackageTable.get_package(29))
+Truck_1.load(PackageTable.get_package(33))
+Truck_1.load(PackageTable.get_package(34))
+Truck_1.load(PackageTable.get_package(39))
+Truck_1.load(PackageTable.get_package(40))
 
-# Load the rest of truck 2
+Truck_2.load(PackageTable.get_package(3))
+Truck_2.load(PackageTable.get_package(5))
+Truck_2.load(PackageTable.get_package(10))
+Truck_2.load(PackageTable.get_package(11))
+Truck_2.load(PackageTable.get_package(12))
+Truck_2.load(PackageTable.get_package(17))
+Truck_2.load(PackageTable.get_package(18))
+Truck_2.load(PackageTable.get_package(22))
 Truck_2.load(PackageTable.get_package(23))
 Truck_2.load(PackageTable.get_package(24))
 Truck_2.load(PackageTable.get_package(26))
 Truck_2.load(PackageTable.get_package(27))
-Truck_2.load(PackageTable.get_package(29))
-Truck_2.load(PackageTable.get_package(30))
-Truck_2.load(PackageTable.get_package(31))
-Truck_2.load(PackageTable.get_package(33))
-Truck_2.load(PackageTable.get_package(34))
 Truck_2.load(PackageTable.get_package(35))
+Truck_2.load(PackageTable.get_package(36))
 Truck_2.load(PackageTable.get_package(37))
-Truck_2.load(PackageTable.get_package(39))
+Truck_2.load(PackageTable.get_package(38))
 
-# Packages 13, 15, 19 need to be delivered together
-Truck_1.load(PackageTable.get_package(13))
-Truck_1.load(PackageTable.get_package(15))
-Truck_1.load(PackageTable.get_package(19))
+Truck_3.load(PackageTable.get_package(6))
+Truck_3.load(PackageTable.get_package(8))
+Truck_3.load(PackageTable.get_package(9))
+Truck_3.load(PackageTable.get_package(25))
+Truck_3.load(PackageTable.get_package(28))
+Truck_3.load(PackageTable.get_package(30))
+Truck_3.load(PackageTable.get_package(31))
+Truck_3.load(PackageTable.get_package(32))
 
-# Load the rest of truck 1
-Truck_1.load(PackageTable.get_package(1))
-Truck_1.load(PackageTable.get_package(2))
-Truck_1.load(PackageTable.get_package(4))
-Truck_1.load(PackageTable.get_package(5))
-Truck_1.load(PackageTable.get_package(7))
-Truck_1.load(PackageTable.get_package(8))
-Truck_1.load(PackageTable.get_package(10))
-Truck_1.load(PackageTable.get_package(11))
-Truck_1.load(PackageTable.get_package(12))
-Truck_1.load(PackageTable.get_package(14))
-Truck_1.load(PackageTable.get_package(20))
-Truck_1.load(PackageTable.get_package(21))
-Truck_1.load(PackageTable.get_package(22))
+deliver(Truck_1)
+deliver(Truck_2)
 
-# Delayed
-# Truck_1.load(PackageTable.get_package(6))
-# Truck_2.load(PackageTable.get_package(25))
-# Truck_2.load(PackageTable.get_package(28))
-# Truck_2.load(PackageTable.get_package(32))
-
-# Wrong address
-# Truck_1.load(PackageTable.get_package(9))
+Truck_3.time = min(Truck_1.time, Truck_2.time)
+deliver(Truck_3)
 
 
 # ------------- Test -------------
-
-deliver(Truck_2)
-# deliver(Truck_1)
-
