@@ -1,6 +1,8 @@
 # Student ID: 011012738
 
 import csv
+import datetime
+from datetime import timedelta
 from package import Package
 from hashtable import HashTable
 from truck import Truck
@@ -11,7 +13,7 @@ PackageTable = HashTable()
 # File path for the csv package data
 file_path = "data/packages.csv"
 
-# TODO make this a function
+# TODO make this a function?
 # Reads the packages csv file and uses the data to create a package object and add it to the package hash table
 # Surround with a try block to catch exceptions
 try:
@@ -121,22 +123,20 @@ def nearest_address(truck):
 
 # ------------- Deliver Function -------------
 
+# TODO pre-sort packages list with nearest addresses instead of every while loop
+# Deliver function uses nearest neighbor algorithm to deliver the packages
 def deliver(truck):
-    # package_list = truck.packages
-    # next_address = nearest_address(truck)
-    # distance = betwixt(truck.current_address, next_address)
-    # truck.add_mileage(distance)
-    # # Formula: time = distance / speed
-    # time_to_deliver = distance / 18
+    # Start time of delivery
+    # Cited from C950 WGUPS Project Implementation Steps - Example - Nearest Neighbor, https://srm--c.vf.force.com/apex/CourseArticle?id=kA03x000001DbBGCA0&groupId=&searchTerm=&courseCode=C950&rtn=/apex/CommonsExpandedSearch
+    time = datetime.timedelta(hours=8, minutes=0, seconds=0)
 
-    # truck.current_address = next_address
-    # truck.unload(package)
-
-    while truck.packages:
+    # While the truck packages list isn't empty it loops through and delivers the packages
+    while len(truck.packages) > 0:
         package_list = truck.packages
+        # Calculates the nearest package address and the distance away from current address
         next_address = nearest_address(truck)
         distance = betwixt(truck.current_address, next_address)
-        
+
         for package in package_list:
             if package.address == next_address:
                 package.status = "EN ROUTE"
@@ -145,12 +145,19 @@ def deliver(truck):
         # Formula: time = distance / speed
         time_to_deliver = distance / 18
         # TODO add time to deliver to elapsed time, keep track of time delivered
+        time = time + datetime.timedelta(hours=time_to_deliver)
 
         for package in package_list:
             if package.address == next_address:
-                print(package.__str__() + ", took " + str(time_to_deliver) + " to deliver")
-                truck.unload(package.id)
+                package.status = "DELIVERED"
+                package.delivery_time = time
+                truck.packages_delivered.append(package)
+                truck.packages.remove(package)
+                print(package.__str__() + ", took " + str(float(time_to_deliver * 60)) + " minutes to deliver")
+
+    print("Truck mileage: " + str(truck.mileage))
         
+# ------------- Create and Load the trucks -------------
 
 # Create the truck objects
 Truck_1 = Truck()
@@ -158,6 +165,7 @@ Truck_2 = Truck()
 # Truck 3 likely won't be used since there are only 2 drivers
 Truck_3 = Truck()
 
+# TODO group packages that have the same delivery address
 # Can only be loaded on truck 2
 Truck_2.load(PackageTable.get_package(3))
 Truck_2.load(PackageTable.get_package(18))
@@ -211,3 +219,5 @@ Truck_1.load(PackageTable.get_package(22))
 # ------------- Test -------------
 
 deliver(Truck_2)
+# deliver(Truck_1)
+

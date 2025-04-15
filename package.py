@@ -1,7 +1,7 @@
 class Package:
 
     # Package class constructor, default status is in hub
-    def __init__(self, id, address, city, state, zip, deadline, weight, notes, status = "IN HUB", delivery_time = 0):
+    def __init__(self, id, address, city, state, zip, deadline, weight, notes, status = "IN HUB"):
         self.id = id
         self.address = address
         self.city = city
@@ -11,7 +11,7 @@ class Package:
         self.weight = weight
         self.notes = notes
         self.status = status
-        self.delivery_time = delivery_time
+        self.delivery_time = None
 
     # Returns a a string of the package's data
     def __str__(self):

@@ -17,16 +17,17 @@ class Truck:
         else:
             self.packages.append(package)
 
-    def unload(self, id):
-        # Loops through all packages in the package list
-        for package in self.packages:
-            # If the passed id matches the package id then it is removed from the package list
-            if package.id == id:
-                self.packages.remove(package)
-                package.status = "DELIVERED"
-                self.packages_delivered.append(package)
-            else:
-                return None
+    # TODO remove or rework, not working and unecessary
+    # def unload(self, id):
+    #     # Loops through all packages in the package list
+    #     for package in self.packages:
+    #         # If the passed id matches the package id then it is removed from the package list
+    #         if package.id == id:
+    #             self.packages.remove(package)
+    #             package.status = "DELIVERED"
+    #             self.packages_delivered.append(package)
+    #         else:
+    #             return None
 
     # # Adds mileage to the truck
     # def add_mileage(self, num):
