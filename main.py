@@ -139,7 +139,7 @@ def deliver(truck):
         
         # Truck mileage is updated and time to deliver is calculated and added to total time
         truck.mileage += distance
-        
+
         # Time to deliver and time updating cited from C950 WGUPS Project Implementation Steps - Example - Nearest Neighbor,
         # https://srm--c.vf.force.com/apex/CourseArticle?id=kA03x000001DbBGCA0&groupId=&searchTerm=&courseCode=C950&rtn=/apex/CommonsExpandedSearch
         # Formula: time = distance / speed
@@ -166,53 +166,28 @@ Truck_1 = Truck()
 Truck_2 = Truck()
 Truck_3 = Truck()
 
-# TODO Make loops and pass in array of the package id's
-Truck_1.load(PackageTable.get_package(1))
-Truck_1.load(PackageTable.get_package(2))
-Truck_1.load(PackageTable.get_package(4))
-Truck_1.load(PackageTable.get_package(7))
-Truck_1.load(PackageTable.get_package(13))
-Truck_1.load(PackageTable.get_package(14))
-Truck_1.load(PackageTable.get_package(15))
-Truck_1.load(PackageTable.get_package(16))
-Truck_1.load(PackageTable.get_package(19))
-Truck_1.load(PackageTable.get_package(20))
-Truck_1.load(PackageTable.get_package(21))
-Truck_1.load(PackageTable.get_package(29))
-Truck_1.load(PackageTable.get_package(33))
-Truck_1.load(PackageTable.get_package(34))
-Truck_1.load(PackageTable.get_package(39))
-Truck_1.load(PackageTable.get_package(40))
+# Add truck package id's to lists to make loading easier
+truck_1_package_ids = [1, 2, 4, 7, 13, 14, 15, 16, 19, 20, 21, 29, 33, 34, 39, 40]
+truck_2_package_ids = [3, 5, 10, 11, 12, 17, 18, 22, 23, 24, 26, 27, 35, 36, 37, 38]
+truck_3_package_ids = [6, 8, 9, 25, 28, 30, 31, 32]
 
-Truck_2.load(PackageTable.get_package(3))
-Truck_2.load(PackageTable.get_package(5))
-Truck_2.load(PackageTable.get_package(10))
-Truck_2.load(PackageTable.get_package(11))
-Truck_2.load(PackageTable.get_package(12))
-Truck_2.load(PackageTable.get_package(17))
-Truck_2.load(PackageTable.get_package(18))
-Truck_2.load(PackageTable.get_package(22))
-Truck_2.load(PackageTable.get_package(23))
-Truck_2.load(PackageTable.get_package(24))
-Truck_2.load(PackageTable.get_package(26))
-Truck_2.load(PackageTable.get_package(27))
-Truck_2.load(PackageTable.get_package(35))
-Truck_2.load(PackageTable.get_package(36))
-Truck_2.load(PackageTable.get_package(37))
-Truck_2.load(PackageTable.get_package(38))
+# For loops used to add packages to the trucks using the package id lists
+for package_id in truck_1_package_ids:
+    Truck_1.load(PackageTable.get_package(package_id))
 
-Truck_3.load(PackageTable.get_package(6))
-Truck_3.load(PackageTable.get_package(8))
-Truck_3.load(PackageTable.get_package(9))
-Truck_3.load(PackageTable.get_package(25))
-Truck_3.load(PackageTable.get_package(28))
-Truck_3.load(PackageTable.get_package(30))
-Truck_3.load(PackageTable.get_package(31))
-Truck_3.load(PackageTable.get_package(32))
+for package_id in truck_2_package_ids:
+    Truck_2.load(PackageTable.get_package(package_id))
+
+for package_id in truck_3_package_ids:
+    Truck_3.load(PackageTable.get_package(package_id))
+
+
+# ------------- Deliver Packages -------------
 
 deliver(Truck_1)
 deliver(Truck_2)
 
+# There are only 2 drivers, truck 3 can only deliver once another truck is finished
 Truck_3.time = min(Truck_1.time, Truck_2.time)
 deliver(Truck_3)
 
