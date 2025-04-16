@@ -88,7 +88,7 @@ def betwixt(address_1, address_2):
 
     # The distance matrix is only half filled so if statement returns if the distance is not empty
     if distance != "":
-        return distance
+        return float(distance)
     # If the distance is empty then the indexes are swapped and the distance is returned
     else:
         distance = distance_matrix[index_2][index_1]
@@ -102,7 +102,7 @@ def nearest_address(truck):
     package_list = truck.packages
     current_address = truck.current_address
     # Holds a large number so that the first package in the loop automatically becomes the shortest
-    shortest_dist = 100
+    shortest_dist = float(100)
     nearest = None
 
     # Loops through all of the package objects in the truck's package list
@@ -145,6 +145,7 @@ def deliver(truck):
         # Formula: time = distance / speed
         time_to_deliver = distance / 18
         truck.time = truck.time + datetime.timedelta(hours=time_to_deliver)
+        truck.current_address = next_address
 
         # Loops through package list and updates package delivery information
         for package in package_list:
@@ -154,10 +155,20 @@ def deliver(truck):
                 # Adds package to the delivered list and removes it from the original package list
                 truck.packages_delivered.append(package)
                 truck.packages.remove(package)
-                print(package.__str__() + ", took " + str(float(time_to_deliver * 60)) + " minutes to deliver")
+                print(package.__str__() + ", took " + str(round(time_to_deliver * 60, 2)) + " minutes to deliver")
 
     print("Truck mileage: " + str(truck.mileage))
 
+
+# ------------- Back to Hub -------------
+
+def back_to_hub(truck):
+    dist_to_hub = betwixt(truck.current_address, address_list[0])
+    truck.mileage += dist_to_hub
+
+    time_to_hub = dist_to_hub / 18
+    truck.time = truck.time + datetime.timedelta(hours=time_to_hub)
+    truck.current_address = address_list[0]
 
 # ------------- Create and Load the trucks -------------
 
@@ -167,9 +178,10 @@ Truck_2 = Truck()
 Truck_3 = Truck()
 
 # Add truck package id's to lists to make loading easier
-truck_1_package_ids = [1, 2, 4, 7, 13, 14, 15, 16, 19, 20, 21, 29, 33, 34, 39, 40]
-truck_2_package_ids = [3, 5, 10, 11, 12, 17, 18, 22, 23, 24, 26, 27, 35, 36, 37, 38]
-truck_3_package_ids = [6, 8, 9, 25, 28, 30, 31, 32]
+truck_1_package_ids = [1,7,13,14,15,16,19,20,21,29,30,31,34,37,39,40]
+truck_2_package_ids = [2,3,5,6,9,12,18,25,26,27,28,32,33,35,36,38]
+truck_3_package_ids = [4,8,10,11,17,22,23,24]
+
 
 # For loops used to add packages to the trucks using the package id lists
 for package_id in truck_1_package_ids:
@@ -185,11 +197,20 @@ for package_id in truck_3_package_ids:
 # ------------- Deliver Packages -------------
 
 deliver(Truck_1)
+
+Truck_2.time = datetime.timedelta(hours=9, minutes=5)
 deliver(Truck_2)
 
 # There are only 2 drivers, truck 3 can only deliver once another truck is finished
+if Truck_1.time < Truck_2.time:
+    back_to_hub(Truck_1)
+else:
+    back_to_hub(Truck_2)
+
 Truck_3.time = min(Truck_1.time, Truck_2.time)
 deliver(Truck_3)
 
+print("Total Mileage: " + str(Truck_1.mileage + Truck_2.mileage + Truck_3.mileage))
 
 # ------------- Test -------------
+
