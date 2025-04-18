@@ -78,19 +78,32 @@ with open("data/addresses.csv", "r") as csv_file:
         address_list.append(row[1])
 
 
+# ------------- Update Status Record Function -------------
+
+# Creates a dictionary to hold all of the update times and a dictionary of packages and their statuses
+status_record = {}
+
+def update_status_record(time):
+    # A dictionary to hold packages and their status
+    package_status_dict = {}
+
+    # loop through every package in the package table
+    for i in range(1, PackageTable.length):
+        package = PackageTable.get_package(i)
+        # Updates the package status dictionary
+        package_status_dict.update({package.__str__(): package.status})
+    
+    # Adds a time key with the package status dictionary as the value to the status record
+    status_record.update({time: package_status_dict})
+
+
 # ------------- Status Record List -------------
 
+# Holds the earliest time before any truck leaves the hub
 earliest_time = datetime.timedelta(hours=7, minutes=30)
-package_status_dict = {}
 
-# TODO Update what exactly is added in dictionaries to make it easier to read
-for i in range(1, PackageTable.length):
-    package = PackageTable.get_package(i)
-    package_status_dict.update({package.__str__(): package.status})
-
-status_record = {
-    earliest_time: package_status_dict
-}
+# Updates the status record using the earliest time as the key
+update_status_record(earliest_time)
 
 
 # ------------- Distance Betwixt Function -------------
@@ -142,16 +155,20 @@ def nearest_address(truck):
 # TODO pre-sort packages list with nearest addresses instead of every while loop
 # Deliver function uses nearest neighbor algorithm to deliver the packages
 def deliver(truck):
+    package_list = truck.packages
+
+    # Loops through all packages in list and changes status to en route
+    for package in package_list:
+            package.status = "EN ROUTE"
+    
+    # Updates the status record once packages are set to en route
+    update_status_record(truck.time)
+
     # While the truck packages list isn't empty it loops through and delivers the packages
     while len(truck.packages) > 0:
-        package_list = truck.packages
         # Calculates the nearest package address and the distance away from current address
         next_address = nearest_address(truck)
         distance = betwixt(truck.current_address, next_address)
-
-        # Loops through all packages in list and changes status to en route
-        for package in package_list:
-                package.status = "EN ROUTE"
         
         # Truck mileage is updated and time to deliver is calculated and added to total time
         truck.mileage += distance
@@ -172,11 +189,14 @@ def deliver(truck):
                 # Adds package to the delivered list and removes it from the original package list
                 truck.packages_delivered.append(package)
                 truck.packages.remove(package)
-                print(package.__str__())
+                # print(package.__str__())
                 # print(package.__str__() + ", took " + str(round(time_to_deliver * 60, 2)) + " minutes to deliver")
 
+        # Updates the status record once packages are delivered to the address
+        update_status_record(truck.time)
+
     # Once all packages are delivered the truck's total mileage is printed
-    print("Truck mileage: " + str(truck.mileage))
+    # print("Truck mileage: " + str(truck.mileage))
 
 
 # ------------- Back to Hub -------------
@@ -250,8 +270,8 @@ print("Total Mileage: " + str(Truck_1.mileage + Truck_2.mileage + Truck_3.mileag
 # print(PackageTable.length)
 
 print("TEST BOOOOOOOOOOOOYYYYY")
-for i, j in package_status_dict.items():
-    print(i, j)
+for i, j in status_record.items():
+    print("Time:", i)
 
 
 # ------------- TODO -------------
