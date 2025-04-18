@@ -1,10 +1,12 @@
-# Student ID: 011012738
+# Kevin Bailey, Student ID: 011012738
 
 import csv
 import datetime
 from package import Package
 from hashtable import HashTable
 from truck import Truck
+
+# ------------- Package Table -------------
 
 # Create the hash table to store package objects
 PackageTable = HashTable()
@@ -76,6 +78,21 @@ with open("data/addresses.csv", "r") as csv_file:
         address_list.append(row[1])
 
 
+# ------------- Status Record List -------------
+
+earliest_time = datetime.timedelta(hours=7, minutes=30)
+package_status_dict = {}
+
+# TODO Update what exactly is added in dictionaries to make it easier to read
+for i in range(1, PackageTable.length):
+    package = PackageTable.get_package(i)
+    package_status_dict.update({package.__str__(): package.status})
+
+status_record = {
+    earliest_time: package_status_dict
+}
+
+
 # ------------- Distance Betwixt Function -------------
 
 # Function that returns the distance between two addresses
@@ -132,9 +149,8 @@ def deliver(truck):
         next_address = nearest_address(truck)
         distance = betwixt(truck.current_address, next_address)
 
-        # Loops through all packages in list and changes status to en route for all going to next address
+        # Loops through all packages in list and changes status to en route
         for package in package_list:
-            if package.address == next_address:
                 package.status = "EN ROUTE"
         
         # Truck mileage is updated and time to deliver is calculated and added to total time
@@ -145,6 +161,7 @@ def deliver(truck):
         # Formula: time = distance / speed
         time_to_deliver = distance / 18
         truck.time = truck.time + datetime.timedelta(hours=time_to_deliver)
+        # Updates truck currrent address to the address just delivered to
         truck.current_address = next_address
 
         # Loops through package list and updates package delivery information
@@ -155,27 +172,33 @@ def deliver(truck):
                 # Adds package to the delivered list and removes it from the original package list
                 truck.packages_delivered.append(package)
                 truck.packages.remove(package)
-                print(package.__str__() + ", took " + str(round(time_to_deliver * 60, 2)) + " minutes to deliver")
+                print(package.__str__())
+                # print(package.__str__() + ", took " + str(round(time_to_deliver * 60, 2)) + " minutes to deliver")
 
+    # Once all packages are delivered the truck's total mileage is printed
     print("Truck mileage: " + str(truck.mileage))
 
 
 # ------------- Back to Hub -------------
 
+# TODO Make this a truck method
 def back_to_hub(truck):
+    # Gets the distance between the truck's current address and the hub then adds that mileage to the truck
     dist_to_hub = betwixt(truck.current_address, address_list[0])
     truck.mileage += dist_to_hub
 
+    # Calculates the time to the hub and adds to the truck's time
     time_to_hub = dist_to_hub / 18
     truck.time = truck.time + datetime.timedelta(hours=time_to_hub)
+    # Updates the truck's current address to the hub
     truck.current_address = address_list[0]
 
 # ------------- Create and Load the trucks -------------
 
 # Create the truck objects
-Truck_1 = Truck()
-Truck_2 = Truck()
-Truck_3 = Truck()
+Truck_1 = Truck(name="Truck 1")
+Truck_2 = Truck(name="Truck 2")
+Truck_3 = Truck(name="Truck 3")
 
 # Add truck package id's to lists to make loading easier
 truck_1_package_ids = [1,7,13,14,15,16,19,20,21,29,30,31,34,37,39,40]
@@ -198,19 +221,43 @@ for package_id in truck_3_package_ids:
 
 deliver(Truck_1)
 
+# Truck 2 has packages that won't arrive until 9:05 am and cannot depart until then
 Truck_2.time = datetime.timedelta(hours=9, minutes=5)
 deliver(Truck_2)
 
-# There are only 2 drivers, truck 3 can only deliver once another truck is finished
+# Takes the truck with the earliest last delivery and returns it to the hub
 if Truck_1.time < Truck_2.time:
     back_to_hub(Truck_1)
+    # Updates Truck 3's departure time to the truck returned to the hub
+    Truck_3.time = Truck_1.time
 else:
     back_to_hub(Truck_2)
+    # Updates Truck 3's departure time to the truck returned to the hub
+    Truck_3.time = Truck_2.time
 
-Truck_3.time = min(Truck_1.time, Truck_2.time)
 deliver(Truck_3)
 
 print("Total Mileage: " + str(Truck_1.mileage + Truck_2.mileage + Truck_3.mileage))
 
+
+# ------------- UI -------------
+
+
+
+
 # ------------- Test -------------
 
+# print(PackageTable.length)
+
+print("TEST BOOOOOOOOOOOOYYYYY")
+for i, j in package_status_dict.items():
+    print(i, j)
+
+
+# ------------- TODO -------------
+
+# TODO - [x] keep track of which truck each package is on
+# TODO - [ ] Move all code above to another py file and having UI in main
+# TODO - [ ] Automatically update package 9 incorrect address at 10:20
+# TODO - [ ] Presort packages list to decrease time complexity
+# TODO - [ ] Have every package status change update the package info in the hash table

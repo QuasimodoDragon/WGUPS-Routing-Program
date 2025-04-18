@@ -5,6 +5,7 @@ class HashTable:
     # Constructor with a defualt size of 10 but can be set manually during creation
     def __init__(self, init_size = 10):
         self.table = []
+        self.length = 0
 
         # Create the number of cells matching the desired size
         for i in range(init_size):
@@ -25,6 +26,7 @@ class HashTable:
         # If bucket is empty add key-value pair
         if self.table[hash_num] is None:
             self.table[hash_num] = list(key_value)
+            self.length += 1
             return True
         else: # Bucket not empty
             # iterate over every key-value pair in the bucket
@@ -32,10 +34,12 @@ class HashTable:
                 # If the key already exists in the bucket then its value is updated
                 if pair[0] == key:
                     pair[1] = value
+                    self.length += 1
                     return True
 
             # Appends the key-value pair to the bucket list
             self.table[hash_num].append(key_value)
+            self.length += 1
             return True
     
     # Searches the hash table using a key and returns package data
@@ -63,6 +67,7 @@ class HashTable:
                 if pair[0] == key:
                     # Remove the key-value pair list in the bucket
                     self.table[hash_num].remove([pair[0], pair[1]])
+                    self.length -= 1
 
     def get_package(self, key):
         hash_num = self._get_hash(key)
