@@ -2,6 +2,7 @@
 
 import csv
 import datetime
+from datetime import datetime as dt
 from package import Package
 from hashtable import HashTable
 from truck import Truck
@@ -88,7 +89,7 @@ def update_status_record(time):
     package_status_dict = {}
 
     # loop through every package in the package table
-    for i in range(1, PackageTable.length):
+    for i in range(1, PackageTable.length + 1):
         package = PackageTable.get_package(i)
         # Updates the package status dictionary
         package_status_dict.update({package.__str__(): package.status})
@@ -257,21 +258,125 @@ else:
 
 deliver(Truck_3)
 
-print("Total Mileage: " + str(Truck_1.mileage + Truck_2.mileage + Truck_3.mileage))
+# print("Total Mileage: " + str(Truck_1.mileage + Truck_2.mileage + Truck_3.mileage))
+
+
+# ------------- Validate Menu Option -------------
+
+# def validate_menu_option(input)
 
 
 # ------------- UI -------------
 
+while True:
+    # Prints the UI header
+    print('''
+    ------------- WGUPS Routing Program -------------
 
+    Menu Options:
+    1. Get a package's status at a certain time
+    2. Get all package status at a certain time
+    3. Print all package status and total mileage
+    4. Close the program
+    ''')
+
+    # Uses a try catch block to catch errors in the input
+    try:
+        # Holds the user's input
+        option = input("Enter a number associated with a menu option: ")
+        option = int(option)
+        
+        if option > 4:
+            raise ValueError()
+    except ValueError:
+        print("\nInvalid: Enter a number from the desired menu options.\n")
+    
+    if option == 1: # 1. Get a package's status at a certain time
+        while True:
+            try:
+                # Gets the user's entered time in string format
+                time_str = input("Enter the time in HH:MM military time format: ")
+                # Converts the time string to a datetime object
+                dt_object = dt.strptime(time_str, '%H:%M')
+                # Converts the date time object to time delta to be consistent with the program's other time format
+                delta = datetime.timedelta(hours=dt_object.hour, minutes=dt_object.minute)
+
+                # Holds the time in the status record that is nearest the user's entered time without going over
+                nearest_time = None
+
+                for time in status_record:
+                    # If the user's time is greater than the status record time entry then update nearest time
+                    if delta > time:
+                        nearest_time = time
+                    # If the user's time is less than the status record time then nearest time is found and break
+                    elif delta < time:
+                        break
+
+                print("Nearest recorded time is: " + str(nearest_time) + "\n")
+                break
+            except ValueError:
+                print("Invalid: Enter a number in HH:MM military time format")
+            except NameError as e:
+                print(e)
+                print("Tits")
+
+        while True:
+            try:
+                package_num = input("Enter the package number: ")
+                print()
+                package_num = int(package_num)
+
+                if package_num > PackageTable.length + 1:
+                    raise ValueError()
+                
+                time_packages = status_record.get(nearest_time)
+                id_string = "ID: " + str(package_num) + ","
+
+                for packages, status in time_packages.items():
+                    if packages.find(id_string) != -1:
+                        print(f"{packages}")
+                
+                break
+            except ValueError:
+                print("Invalid: Enter a valid package number.\n")
+    elif option == 2: # 2. Get all package status at a certain time
+        # Gets the user's entered time in string format
+        time_str = input("Enter the time in HH:MM military time format: ")
+        # Converts the time string to a datetime object
+        dt_object = dt.strptime(time_str, '%H:%M')
+        # Converts the date time object to time delta to be consistent with the program's other time format
+        delta = datetime.timedelta(hours=dt_object.hour, minutes=dt_object.minute)
+
+        # Holds the time in the status record that is nearest the user's entered time without going over
+        nearest_time = None
+
+        for time in status_record:
+            # If the user's time is greater than the status record time entry then update nearest time
+            if delta > time:
+                nearest_time = time
+            # If the user's time is less than the status record time then nearest time is found and break
+            elif delta < time:
+                break
+
+        print("You entered: " + str(delta))
+        print("Nearest time is: " + str(nearest_time))
+
+        time_packages = status_record.get(nearest_time)
+
+        for packages, status in time_packages.items():
+            print(f"{packages}")
+    elif option == 3: # 3. Print all package status and total mileage
+        time_packages = PackageTable
+
+        for i in range(1, PackageTable.length + 1):
+            print(PackageTable.lookup(i))
+    elif option == 4: # 4. Close the program
+        print("WGUPS Routing Program Closed\n")
+        break
 
 
 # ------------- Test -------------
-
-# print(PackageTable.length)
-
-print("TEST BOOOOOOOOOOOOYYYYY")
-for i, j in status_record.items():
-    print("Time:", i)
+    
 
 
 # ------------- TODO -------------
@@ -280,4 +385,4 @@ for i, j in status_record.items():
 # TODO - [ ] Move all code above to another py file and having UI in main
 # TODO - [ ] Automatically update package 9 incorrect address at 10:20
 # TODO - [ ] Presort packages list to decrease time complexity
-# TODO - [ ] Have every package status change update the package info in the hash table
+# TODO - [ ] Validate user input in UI

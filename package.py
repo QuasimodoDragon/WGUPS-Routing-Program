@@ -16,7 +16,7 @@ class Package:
 
     # Returns a a string of the package's data
     def __str__(self):
-        if self.status == "IN HUB":
-            return f'ID: {self.id}, Address: {self.address}, City: {self.city}, Zip Code: {self.zip}, Deadline: {self.deadline}, Weight (kg): {self.weight}, Status: {self.status}, Truck: {self.truck}'
+        if self.status == "DELIVERED":
+            return f'ID: {self.id}, Address: {self.address}, City: {self.city}, Zip Code: {self.zip}, Deadline: {self.deadline}, Weight (kg): {self.weight}, Truck: {self.truck}, Status: {self.status}, Delivered on {self.delivery_time}'
         else:
-            return f'ID: {self.id}, Address: {self.address}, City: {self.city}, Zip Code: {self.zip}, Deadline: {self.deadline}, Weight (kg): {self.weight}, Status: {self.status}, Delivered on {self.delivery_time}, Truck: {self.truck}'
+            return f'ID: {self.id}, Address: {self.address}, City: {self.city}, Zip Code: {self.zip}, Deadline: {self.deadline}, Weight (kg): {self.weight}, Truck: {self.truck}, Status: {self.status}'
