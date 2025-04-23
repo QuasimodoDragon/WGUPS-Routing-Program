@@ -1,4 +1,5 @@
-# Kevin Bailey, Student ID: 011012738
+# Kevin Bailey
+# Student ID: 011012738
 
 import csv
 import datetime
@@ -47,6 +48,15 @@ except FileNotFoundError:
 # If the user doesn't have permission to open the file print the exception
 except PermissionError:
     print("Permission to open the file not granted")
+
+
+# ------------- Update Special Package Information -------------
+
+delayed_pacakge_id = [6,25,28,32]
+
+for id in delayed_pacakge_id:
+    package = PackageTable.get_package(id)
+    package.status = "DELAYED"
 
 
 # ------------- Distance Matrix ------------- 
@@ -214,6 +224,7 @@ def back_to_hub(truck):
     # Updates the truck's current address to the hub
     truck.current_address = address_list[0]
 
+
 # ------------- Create and Load the trucks -------------
 
 # Create the truck objects
@@ -223,8 +234,8 @@ Truck_3 = Truck(name="Truck 3")
 
 # Add truck package id's to lists to make loading easier
 truck_1_package_ids = [1,7,13,14,15,16,19,20,21,29,30,31,34,37,39,40]
-truck_2_package_ids = [2,3,5,6,9,12,18,25,26,27,28,32,33,35,36,38]
-truck_3_package_ids = [4,8,10,11,17,22,23,24]
+truck_2_package_ids = [2,3,4,5,6,12,18,25,26,27,28,32,33,35,36,38]
+truck_3_package_ids = [8,9,10,11,17,22,23,24]
 
 
 # For loops used to add packages to the trucks using the package id lists
@@ -280,18 +291,22 @@ while True:
     4. Close the program
     ''')
 
-    # Uses a try catch block to catch errors in the input
+    # Uses a try except block to catch errors in the input
     try:
         # Holds the user's input
         option = input("Enter a number associated with a menu option: ")
+        print()
+        # Throws an error if the input is not an int
         option = int(option)
         
+        # If input is greater than 4 throw exception
         if option > 4:
             raise ValueError()
     except ValueError:
         print("\nInvalid: Enter a number from the desired menu options.\n")
     
     if option == 1: # 1. Get a package's status at a certain time
+        # Loop to validate user time input
         while True:
             try:
                 # Gets the user's entered time in string format
@@ -318,65 +333,86 @@ while True:
                 print("Invalid: Enter a number in HH:MM military time format")
             except NameError as e:
                 print(e)
-                print("Tits")
 
+        # Loop to validate user package number input
         while True:
             try:
                 package_num = input("Enter the package number: ")
                 print()
+                # Validates user input is int
                 package_num = int(package_num)
 
-                if package_num > PackageTable.length + 1:
+                # If package number input is 0 or greater than the amount off packages then throw exception
+                if package_num == 0 or package_num > PackageTable.length:
                     raise ValueError()
                 
+                # Holds the packages and their status for the user's desired time
                 time_packages = status_record.get(nearest_time)
+                # Uses a string to find the correct package
                 id_string = "ID: " + str(package_num) + ","
 
+                # Loops through the packages and prints the package's status at the desired time
                 for packages, status in time_packages.items():
                     if packages.find(id_string) != -1:
+                        print("Package Status as of " + str(nearest_time))
                         print(f"{packages}")
                 
                 break
             except ValueError:
                 print("Invalid: Enter a valid package number.\n")
     elif option == 2: # 2. Get all package status at a certain time
-        # Gets the user's entered time in string format
-        time_str = input("Enter the time in HH:MM military time format: ")
-        # Converts the time string to a datetime object
-        dt_object = dt.strptime(time_str, '%H:%M')
-        # Converts the date time object to time delta to be consistent with the program's other time format
-        delta = datetime.timedelta(hours=dt_object.hour, minutes=dt_object.minute)
+        while True:
+            try:
+                # Gets the user's entered time in string format
+                time_str = input("Enter the time in HH:MM military time format: ")
+                print()
+                # Converts the time string to a datetime object
+                dt_object = dt.strptime(time_str, '%H:%M')
+                # Converts the date time object to time delta to be consistent with the program's other time format
+                delta = datetime.timedelta(hours=dt_object.hour, minutes=dt_object.minute)
 
-        # Holds the time in the status record that is nearest the user's entered time without going over
-        nearest_time = None
+                # Holds the time in the status record that is nearest the user's entered time without going over
+                nearest_time = None
 
-        for time in status_record:
-            # If the user's time is greater than the status record time entry then update nearest time
-            if delta > time:
-                nearest_time = time
-            # If the user's time is less than the status record time then nearest time is found and break
-            elif delta < time:
+                for time in status_record:
+                    # If the user's time is greater than the status record time entry then update nearest time
+                    if delta > time:
+                        nearest_time = time
+                    # If the user's time is less than the status record time then nearest time is found and break
+                    elif delta < time:
+                        break
+
+                # Holds the packages and their status for the user's desired time
+                time_packages = status_record.get(nearest_time)
+                print("Nearest recorded time is: " + str(nearest_time) + "\n")
+                print("Package Status as of " + str(nearest_time))
+
+                # Loops through packages and their status at desired time and prints status
+                for packages, status in time_packages.items():
+                    print(f"{packages}")
+                
                 break
-
-        print("You entered: " + str(delta))
-        print("Nearest time is: " + str(nearest_time))
-
-        time_packages = status_record.get(nearest_time)
-
-        for packages, status in time_packages.items():
-            print(f"{packages}")
+            except ValueError:
+                print("Invalid: Enter the time in HH:MM military time format")
+            except AttributeError:
+                print("Invalid: The earliest recorded time is 8:00")
     elif option == 3: # 3. Print all package status and total mileage
         time_packages = PackageTable
+        print("Package Status as of EOD")
 
+        # Loops through package table and prints package information after deliveries complete
         for i in range(1, PackageTable.length + 1):
             print(PackageTable.lookup(i))
+
+        print()
+        # Gets total truck mileage and prints
+        total_mileage = Truck_1.mileage + Truck_2.mileage + Truck_3.mileage
+        print("Total Mileage: " + str(total_mileage))
     elif option == 4: # 4. Close the program
         print("WGUPS Routing Program Closed\n")
         break
-
-
-# ------------- Test -------------
-    
+    else:
+        continue
 
 
 # ------------- TODO -------------
@@ -385,4 +421,7 @@ while True:
 # TODO - [ ] Move all code above to another py file and having UI in main
 # TODO - [ ] Automatically update package 9 incorrect address at 10:20
 # TODO - [ ] Presort packages list to decrease time complexity
-# TODO - [ ] Validate user input in UI
+# TODO - [x] Validate user input in UI
+# TODO - [x] Validate entering nothing in UI
+# TODO - [ ] Implement continue in UI while loops to optimize flow
+# TODO - [ ] Add delayed as status and add it to needed packages
