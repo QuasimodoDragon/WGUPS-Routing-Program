@@ -225,6 +225,26 @@ def back_to_hub(truck):
     truck.current_address = address_list[0]
 
 
+# ------------- Closest Time -------------
+
+def closest_time(delta):
+    nearest_time = None
+
+    # Creates a list to hold all the times from the status record and sorts them in ascending order
+    times_list = list(status_record.keys())
+    times_list.sort()
+
+    for time in times_list:
+        # If the user's time is greater than the status record time entry then update nearest time
+        if delta >= time:
+            nearest_time = time
+        # If the user's time is less than the status record time then nearest time is found and break
+        elif delta < time:
+            break
+
+    return nearest_time
+
+
 # ------------- Create and Load the trucks -------------
 
 # Create the truck objects
@@ -269,13 +289,6 @@ else:
 
 deliver(Truck_3)
 
-# print("Total Mileage: " + str(Truck_1.mileage + Truck_2.mileage + Truck_3.mileage))
-
-
-# ------------- Validate Menu Option -------------
-
-# def validate_menu_option(input)
-
 
 # ------------- UI -------------
 
@@ -300,7 +313,7 @@ while True:
         option = int(option)
         
         # If input is greater than 4 throw exception
-        if option > 4:
+        if option > 5:
             raise ValueError()
     except ValueError:
         print("\nInvalid: Enter a number from the desired menu options.\n")
@@ -317,17 +330,9 @@ while True:
                 delta = datetime.timedelta(hours=dt_object.hour, minutes=dt_object.minute)
 
                 # Holds the time in the status record that is nearest the user's entered time without going over
-                nearest_time = None
-
-                for time in status_record:
-                    # If the user's time is greater than the status record time entry then update nearest time
-                    if delta > time:
-                        nearest_time = time
-                    # If the user's time is less than the status record time then nearest time is found and break
-                    elif delta < time:
-                        break
-
+                nearest_time = closest_time(delta)
                 print("Nearest recorded time is: " + str(nearest_time) + "\n")
+
                 break
             except ValueError:
                 print("Invalid: Enter a number in HH:MM military time format")
@@ -372,15 +377,7 @@ while True:
                 delta = datetime.timedelta(hours=dt_object.hour, minutes=dt_object.minute)
 
                 # Holds the time in the status record that is nearest the user's entered time without going over
-                nearest_time = None
-
-                for time in status_record:
-                    # If the user's time is greater than the status record time entry then update nearest time
-                    if delta > time:
-                        nearest_time = time
-                    # If the user's time is less than the status record time then nearest time is found and break
-                    elif delta < time:
-                        break
+                nearest_time = closest_time(delta)
 
                 # Holds the packages and their status for the user's desired time
                 time_packages = status_record.get(nearest_time)
@@ -410,7 +407,8 @@ while True:
         print("Total Mileage: " + str(total_mileage))
     elif option == 4: # 4. Close the program
         print("WGUPS Routing Program Closed\n")
-        break
+        
+        break   
     else:
         continue
 
@@ -424,4 +422,5 @@ while True:
 # TODO - [x] Validate user input in UI
 # TODO - [x] Validate entering nothing in UI
 # TODO - [ ] Implement continue in UI while loops to optimize flow
-# TODO - [ ] Add delayed as status and add it to needed packages
+# TODO - [x] Add delayed as status and add it to needed packages
+# TODO - [ ] Create nearest time function
