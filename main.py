@@ -170,10 +170,10 @@ def deliver(truck):
 
     # Loops through all packages in list and changes status to en route
     for package in package_list:
-            package.status = "EN ROUTE"
+            package.en_route_time = truck.time
     
-    # Updates the status record once packages are set to en route
-    update_status_record(truck.time)
+    # # Updates the status record once packages are set to en route
+    # update_status_record(truck.time)
 
     # While the truck packages list isn't empty it loops through and delivers the packages
     while len(truck.packages) > 0:
@@ -195,24 +195,18 @@ def deliver(truck):
         # Loops through package list and updates package delivery information
         for package in package_list:
             if package.address == next_address:
-                package.status = "DELIVERED"
+                # package.status = "DELIVERED"
                 package.delivery_time = truck.time
                 # Adds package to the delivered list and removes it from the original package list
                 truck.packages_delivered.append(package)
                 truck.packages.remove(package)
-                # print(package.__str__())
-                # print(package.__str__() + ", took " + str(round(time_to_deliver * 60, 2)) + " minutes to deliver")
 
-        # Updates the status record once packages are delivered to the address
-        update_status_record(truck.time)
-
-    # Once all packages are delivered the truck's total mileage is printed
-    # print("Truck mileage: " + str(truck.mileage))
+        # # Updates the status record once packages are delivered to the address
+        # update_status_record(truck.time)
 
 
 # ------------- Back to Hub -------------
 
-# TODO Make this a truck method
 def back_to_hub(truck):
     # Gets the distance between the truck's current address and the hub then adds that mileage to the truck
     dist_to_hub = betwixt(truck.current_address, address_list[0])
@@ -313,7 +307,7 @@ while True:
         option = int(option)
         
         # If input is greater than 4 throw exception
-        if option > 5:
+        if option > 4:
             raise ValueError()
     except ValueError:
         print("\nInvalid: Enter a number from the desired menu options.\n")
@@ -328,10 +322,6 @@ while True:
                 dt_object = dt.strptime(time_str, '%H:%M')
                 # Converts the date time object to time delta to be consistent with the program's other time format
                 delta = datetime.timedelta(hours=dt_object.hour, minutes=dt_object.minute)
-
-                # Holds the time in the status record that is nearest the user's entered time without going over
-                nearest_time = closest_time(delta)
-                print("Nearest recorded time is: " + str(nearest_time) + "\n")
 
                 break
             except ValueError:
@@ -351,16 +341,12 @@ while True:
                 if package_num == 0 or package_num > PackageTable.length:
                     raise ValueError()
                 
-                # Holds the packages and their status for the user's desired time
-                time_packages = status_record.get(nearest_time)
-                # Uses a string to find the correct package
-                id_string = "ID: " + str(package_num) + ","
+                # Get package and set status at the desired time
+                package = PackageTable.get_package(package_num)
+                package.set_status(delta)
 
-                # Loops through the packages and prints the package's status at the desired time
-                for packages, status in time_packages.items():
-                    if packages.find(id_string) != -1:
-                        print("Package Status as of " + str(nearest_time))
-                        print(f"{packages}")
+                print("Package Status as of " + time_str)
+                print(package.__str__())
                 
                 break
             except ValueError:
@@ -376,30 +362,25 @@ while True:
                 # Converts the date time object to time delta to be consistent with the program's other time format
                 delta = datetime.timedelta(hours=dt_object.hour, minutes=dt_object.minute)
 
-                # Holds the time in the status record that is nearest the user's entered time without going over
-                nearest_time = closest_time(delta)
-
-                # Holds the packages and their status for the user's desired time
-                time_packages = status_record.get(nearest_time)
-                print("Nearest recorded time is: " + str(nearest_time) + "\n")
-                print("Package Status as of " + str(nearest_time))
-
-                # Loops through packages and their status at desired time and prints status
-                for packages, status in time_packages.items():
-                    print(f"{packages}")
+                # For ever package in pakage table set status to desired time and print
+                for i in range(1, PackageTable.length + 1):
+                    package = PackageTable.get_package(i)
+                    package.set_status(delta)
+                    print(package.__str__())
                 
                 break
             except ValueError:
                 print("Invalid: Enter the time in HH:MM military time format")
-            except AttributeError:
-                print("Invalid: The earliest recorded time is 8:00")
     elif option == 3: # 3. Print all package status and total mileage
-        time_packages = PackageTable
         print("Package Status as of EOD")
+        # Holds EOD time: 5:00 pm
+        delta = datetime.timedelta(hours=17)
 
         # Loops through package table and prints package information after deliveries complete
         for i in range(1, PackageTable.length + 1):
-            print(PackageTable.lookup(i))
+            package = PackageTable.get_package(i)
+            package.set_status(delta)
+            print(package.__str__())
 
         print()
         # Gets total truck mileage and prints
@@ -407,8 +388,8 @@ while True:
         print("Total Mileage: " + str(total_mileage))
     elif option == 4: # 4. Close the program
         print("WGUPS Routing Program Closed\n")
-        
-        break   
+
+        break
     else:
         continue
 
@@ -423,4 +404,7 @@ while True:
 # TODO - [x] Validate entering nothing in UI
 # TODO - [ ] Implement continue in UI while loops to optimize flow
 # TODO - [x] Add delayed as status and add it to needed packages
-# TODO - [ ] Create nearest time function
+# TODO - [x] Create nearest time function
+# TODO - [ ] Make back to hub a truck method
+
+# Maybe have deliver update status record of only packages it has. All other packages takee update from something else? Idk
