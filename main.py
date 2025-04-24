@@ -191,26 +191,6 @@ def back_to_hub(truck):
     truck.current_address = address_list[0]
 
 
-# ------------- Closest Time -------------
-
-def closest_time(delta):
-    nearest_time = None
-
-    # Creates a list to hold all the times from the status record and sorts them in ascending order
-    times_list = list(status_record.keys())
-    times_list.sort()
-
-    for time in times_list:
-        # If the user's time is greater than the status record time entry then update nearest time
-        if delta >= time:
-            nearest_time = time
-        # If the user's time is less than the status record time then nearest time is found and break
-        elif delta < time:
-            break
-
-    return nearest_time
-
-
 # ------------- Create and Load the trucks -------------
 
 # Create the truck objects
