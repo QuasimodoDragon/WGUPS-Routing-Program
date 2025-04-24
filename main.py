@@ -54,9 +54,13 @@ except PermissionError:
 
 delayed_pacakge_id = [6,25,28,32]
 
+# Sets any delayed package's status to delayed
 for id in delayed_pacakge_id:
     package = PackageTable.get_package(id)
     package.status = "DELAYED"
+
+# Updates package 9's incorrect address
+PackageTable.get_package(9).address = "410 S State St"
 
 
 # ------------- Distance Matrix ------------- 
@@ -233,6 +237,10 @@ else:
     # Updates Truck 3's departure time to the truck returned to the hub
     Truck_3.time = Truck_2.time
 
+# Confirm truck 3 departure time is 10:20 at the latest so package 9 can have the correct address
+if Truck_3.time < datetime.timedelta(hours=10, minutes=20):
+    Truck_3.time = datetime.timedelta(hours=10, minutes=20)
+
 deliver(Truck_3)
 
 
@@ -358,5 +366,3 @@ while True:
 # TODO - [x] Add delayed as status and add it to needed packages
 # TODO - [x] Create nearest time function
 # TODO - [ ] Make back to hub a truck method
-
-# Maybe have deliver update status record of only packages it has. All other packages takee update from something else? Idk
