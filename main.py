@@ -89,34 +89,6 @@ with open("data/addresses.csv", "r") as csv_file:
         address_list.append(row[1])
 
 
-# ------------- Update Status Record Function -------------
-
-# Creates a dictionary to hold all of the update times and a dictionary of packages and their statuses
-status_record = {}
-
-def update_status_record(time):
-    # A dictionary to hold packages and their status
-    package_status_dict = {}
-
-    # loop through every package in the package table
-    for i in range(1, PackageTable.length + 1):
-        package = PackageTable.get_package(i)
-        # Updates the package status dictionary
-        package_status_dict.update({package.__str__(): package.status})
-    
-    # Adds a time key with the package status dictionary as the value to the status record
-    status_record.update({time: package_status_dict})
-
-
-# ------------- Status Record List -------------
-
-# Holds the earliest time before any truck leaves the hub
-earliest_time = datetime.timedelta(hours=7, minutes=30)
-
-# Updates the status record using the earliest time as the key
-update_status_record(earliest_time)
-
-
 # ------------- Distance Betwixt Function -------------
 
 # Function that returns the distance between two addresses
