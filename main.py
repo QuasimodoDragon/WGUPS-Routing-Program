@@ -16,7 +16,6 @@ PackageTable = HashTable()
 # File path for the csv package data
 file_path = "data/packages.csv"
 
-# TODO make this a function?
 # Reads the packages csv file and uses the data to create a package object and add it to the package hash table
 # Surround with a try block to catch exceptions
 try:
@@ -52,14 +51,15 @@ except PermissionError:
 
 # ------------- Update Special Package Information -------------
 
-delayed_pacakge_id = [6,25,28,32]
+delayed_package_id = [6,25,28,32]
 
 # Sets any delayed package's status to delayed
-for id in delayed_pacakge_id:
+for id in delayed_package_id:
     package = PackageTable.get_package(id)
+    package.delayed = True
     package.status = "DELAYED"
 
-# Updates package 9's incorrect address
+# Updates package 9's incorrect address, the package won't be put for delivery until 10:20
 PackageTable.get_package(9).address = "410 S State St"
 
 
@@ -139,7 +139,6 @@ def nearest_address(truck):
 
 # ------------- Deliver Function -------------
 
-# TODO pre-sort packages list with nearest addresses instead of every while loop
 # Deliver function uses nearest neighbor algorithm to deliver the packages
 def deliver(truck):
     package_list = truck.packages
@@ -147,9 +146,6 @@ def deliver(truck):
     # Loops through all packages in list and changes status to en route
     for package in package_list:
             package.en_route_time = truck.time
-    
-    # # Updates the status record once packages are set to en route
-    # update_status_record(truck.time)
 
     # While the truck packages list isn't empty it loops through and delivers the packages
     while len(truck.packages) > 0:
@@ -176,9 +172,6 @@ def deliver(truck):
                 # Adds package to the delivered list and removes it from the original package list
                 truck.packages_delivered.append(package)
                 truck.packages.remove(package)
-
-        # # Updates the status record once packages are delivered to the address
-        # update_status_record(truck.time)
 
 
 # ------------- Back to Hub -------------
@@ -305,6 +298,12 @@ while True:
                 package = PackageTable.get_package(package_num)
                 package.set_status(delta)
 
+                # Updates the address for package 9 based on the input time since the correct address is updated at 10:20
+                if package.id == 9 and delta < datetime.timedelta(hours=10, minutes=20):
+                    package.address = "300 State St"
+                elif package.id == 9 and delta >= datetime.timedelta(hours=10, minutes=20):
+                    package.address = "410 S State St"
+
                 print("Package Status as of " + time_str)
                 print(package.__str__())
                 
@@ -326,6 +325,13 @@ while True:
                 for i in range(1, PackageTable.length + 1):
                     package = PackageTable.get_package(i)
                     package.set_status(delta)
+
+                    # Updates the address for package 9 based on the input time since the correct address is updated at 10:20
+                    if package.id == 9 and delta < datetime.timedelta(hours=10, minutes=20):
+                        package.address = "300 State St"
+                    elif package.id == 9 and delta >= datetime.timedelta(hours=10, minutes=20):
+                        package.address = "410 S State St"
+
                     print(package.__str__())
                 
                 break
@@ -340,6 +346,13 @@ while True:
         for i in range(1, PackageTable.length + 1):
             package = PackageTable.get_package(i)
             package.set_status(delta)
+
+            # Confirms the address for package 9 is correct since the correct address is updated at 10:20.
+            # If the address is changed to the old one by the user selecting another menu option before choosing 3
+            # then this confirms the correct address is printed to the screeen since this shows status after all deliveries
+            if package.id == 9:
+                package.address = "410 S State St"
+
             print(package.__str__())
 
         print()
@@ -358,7 +371,7 @@ while True:
 
 # TODO - [x] keep track of which truck each package is on
 # TODO - [ ] Move all code above to another py file and having UI in main
-# TODO - [ ] Automatically update package 9 incorrect address at 10:20
+# TODO - [x] Automatically update package 9 incorrect address at 10:20
 # TODO - [ ] Presort packages list to decrease time complexity
 # TODO - [x] Validate user input in UI
 # TODO - [x] Validate entering nothing in UI
@@ -366,3 +379,4 @@ while True:
 # TODO - [x] Add delayed as status and add it to needed packages
 # TODO - [x] Create nearest time function
 # TODO - [ ] Make back to hub a truck method
+# TODO - [ ] Make CSV file reading a function?
